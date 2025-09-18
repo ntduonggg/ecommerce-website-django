@@ -15,6 +15,12 @@
 <!-- ========================= SECTION INTRO END// ========================= -->
 
 <!-- ========================= SECTION CONTENT ========================= -->
+ {% if cart_items|length == 0 %}
+ <div class="text-center">
+	<img src="{% static './images/shopping-basket-no-item-cart.png' %}" alt="">
+	<h2>Your cart is empty. <a href="{% url 'store' %}" class="alert-link">Go to store</a></h2>
+ </div>
+ {% else %}
 <section class="section-content padding-y">
 <div class="container">
 
@@ -32,12 +38,17 @@
 </tr>
 </thead>
 <tbody>
+{% for cart_item in cart_items %}
 <tr>
 	<td>
 		<figure class="itemside">
-			<div class="aside"><img src="images/items/1.jpg" class="img-sm"></div>
+			<div class="aside">
+				<a href="{{ cart_item.product.get_url }}">
+					<img src="{{ cart_item.product.image.url }}" class="img-sm">
+				</a>
+			</div>
 			<figcaption class="info">
-				<a href="#" class="title text-dark">Some name of item goes here nice</a>
+				<a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
 				<p class="text-muted small">Size: XL, Color: blue, <br> Brand: Gucci</p>
 			</figcaption>
 		</figure>
@@ -46,89 +57,33 @@
 		<div class="col"> 
 			<div class="input-group input-spinner">
 				<div class="input-group-prepend">
-				<button class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </button>
+				<a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
 				</div>
-				<input type="text" class="form-control"  value="1">
+				<input type="text" class="form-control"  value="{{ cart_item.quantity }}">
 				<div class="input-group-append">
-				<button class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </button>
+				<a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light" type="button" id="button-minus"> <i class="fa fa-plus"></i> </a>
 				</div>
 		    </div>
 		</div>
 	</td>
 	<td> 
 		<div class="price-wrap"> 
-			<var class="price">$1156.00</var> 
-			<small class="text-muted"> $315.20 each </small> 
+			<var class="price">{{ cart_item.sub_total|floatformat:0|intcomma }}đ</var> 
+			<small class="text-muted">{{ cart_item.product.price|floatformat:0|intcomma }}đ/1</small> 
 		</div> <!-- price-wrap .// -->
 	</td>
 	<td class="text-right"> 
-	<a data-original-title="Save to Wishlist" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a> 
-	<a href="" class="btn btn-light"> Remove</a>
+	<!-- <a data-original-title="Save to Wishlist" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a>  -->
+	<a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-light"> Remove</a>
 	</td>
 </tr>
-<tr>
-	<td>
-		<figure class="itemside">
-			<div class="aside"><img src="images/items/2.jpg" class="img-sm"></div>
-			<figcaption class="info">
-				<a href="#" class="title text-dark">Product name  goes here nice</a>
-				<p class="text-muted small">Size: XL, Color: blue, <br> Brand: Gucci</p>
-			</figcaption>
-		</figure>
-	</td>
-	<td> 
-		<select class="form-control">
-			<option>1</option>
-			<option>2</option>	
-			<option>3</option>	
-			<option>4</option>	
-		</select> 
-	</td>
-	<td> 
-		<div class="price-wrap"> 
-			<var class="price">$149.97</var> 
-			<small  class="text-muted"> $75.00 each </small>  
-		</div> <!-- price-wrap .// -->
-	</td>
-	<td class="text-right"> 
-	<a data-original-title="Save to Wishlist" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a> 
-	<a href="" class="btn btn-light btn-round"> Remove</a>
-	</td>
-</tr>
-<tr>
-	<td>
-		<figure class="itemside">
-			<div class="aside"><img src="images/items/3.jpg" class="img-sm"></div>
-			<figcaption class="info">
-				<a href="#" class="title text-dark">Another name of some product goes just here</a>
-				<p class="small text-muted">Size: XL, Color: blue,  Brand: Tissot</p>
-			</figcaption>
-		</figure>
-	</td>
-	<td> 
-		<select class="form-control">
-			<option>1</option>
-			<option>2</option>	
-			<option>3</option>	
-		</select> 
-	</td>
-	<td> 
-		<div class="price-wrap"> 
-			<var class="price">$98.00</var> 
-			<small class="text-muted"> $578.00 each</small> 
-		</div> <!-- price-wrap .// -->
-	</td>
-	<td class="text-right"> 
-		<a data-original-title="Save to Wishlist" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a> 
-		<a href="" class="btn btn-light btn-round"> Remove</a>
-	</td>
-</tr>
+{% endfor %}
 </tbody>
 </table>
 
 <div class="card-body border-top">
 	<a href="#" class="btn btn-primary float-md-right"> Make Purchase <i class="fa fa-chevron-right"></i> </a>
-	<a href="#" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Continue shopping </a>
+	<a href="{% url 'store' %}" class="btn btn-light"> <i class="fa fa-chevron-left"></i> Continue shopping </a>
 </div>	
 </div> <!-- card.// -->
 
@@ -157,15 +112,19 @@
 			<div class="card-body">
 					<dl class="dlist-align">
 					  <dt>Total price:</dt>
-					  <dd class="text-right">USD 568</dd>
+					  <dd class="text-right">{{ total|floatformat:0|intcomma }}đ</dd>
+					</dl>
+					<dl class="dlist-align">
+					  <dt>Tax:</dt>
+					  <dd class="text-right">{{ tax|floatformat:0|intcomma }}đ</dd>
 					</dl>
 					<dl class="dlist-align">
 					  <dt>Discount:</dt>
-					  <dd class="text-right">USD 658</dd>
+					  <dd class="text-right">{{ discount|floatformat:0|intcomma }}đ</dd>
 					</dl>
 					<dl class="dlist-align">
 					  <dt>Total:</dt>
-					  <dd class="text-right  h5"><strong>$1,650</strong></dd>
+					  <dd class="text-right  h5"><strong>{{ grand_total|floatformat:0|intcomma }}đ</strong></dd>
 					</dl>
 					<hr>
 					<p class="text-center mb-3">
@@ -179,6 +138,8 @@
 
 </div> <!-- container .//  -->
 </section>
+{% endif %}
+
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
 <!-- ========================= SECTION  ========================= -->
