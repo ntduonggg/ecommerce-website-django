@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from accounts.forms import RegistrationForm
 from .models import Account
+from carts.models import Cart
+from carts.views import _cart_id
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -56,6 +58,10 @@ def login(request):
         password = request.POST['password']
         user = authenticate(email=email, password=password)
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+            except:
+                pass
             auth.login(request, user)
             messages.success(request, 'You are now logged in.')
             return redirect('dashboard')
