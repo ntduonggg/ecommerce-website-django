@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from store.models import Product, Variation
 from .models import Cart, CartItem
 from . import views
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def _cart_id(request):
@@ -95,6 +96,10 @@ def remove_cart_item(request, product_id, cart_item_id):
     return redirect('cart')
 
 def cart(request, total=0, quantity=0, cart_items=None):
+    tax = 0
+    discount = 0
+    discount_percent = 0
+    grand_total = 0
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
@@ -119,6 +124,42 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'cart_items': cart_items,
         'tax': tax,
         'discount': discount,
+        'discount_percent': discount_percent * 100,
         'grand_total': grand_total
     }
     return render(request, 'store/cart.html', context)
+
+@login_required(login_url='login')
+def checkout(request, total=0, quantity=0, cart_items=None):
+    tax = 0
+    discount = 0
+    discount_percent = 0
+    grand_total = 0
+    try:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += float(cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+        tax = (2 * total)/100
+        if total <= 10000000:
+            discount_percent = 0.05
+        elif total <= 50000000:
+            discount_percent = 0.07
+        else:
+            discount_percent = 0.1
+        discount = total * discount_percent
+        grand_total = total + tax - discount
+        
+    except Cart.DoesNotExist:
+        pass
+    context = {
+        'total': total,
+        'quantity': quantity,
+        'cart_items': cart_items,
+        'tax': tax,
+        'discount': discount,
+        'discount_percent': discount_percent * 100,
+        'grand_total': grand_total
+    }
+    return render(request, 'store/checkout.html', context)
