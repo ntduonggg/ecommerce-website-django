@@ -7,7 +7,8 @@
 {% load humanize %}
 <section class="section-content padding-y bg">
 <div class="container">
-	<form action="">
+	<form action="{% url 'place_order' %}" method="POST">
+	{% csrf_token %}
 <!-- ============================ COMPONENT 2 ================================= -->
  <article class="card mb-4">
     <div class="card-body">
@@ -73,7 +74,6 @@
     <article class="card mb-4">
     <div class="card-body">
     	<h4 class="card-title mb-4">Contact info</h4>
-    	<form action="">
     		<div class="row">
     			<div class="form-group col-sm-6">
     				<label>First name</label>
@@ -85,14 +85,17 @@
     			</div>
     			<div class="form-group col-sm-6">
     				<label>Phone</label>
-    				<input type="text" value="+998" class="form-control" name="phone">
+    				<input type="text" value="+998" class="form-control" name="phone_number">
     			</div>
     			<div class="form-group col-sm-6">
     				<label>Email</label>
     				<input type="email" placeholder="example@gmail.com" class="form-control" name="email">
     			</div>
+				<div class="form-group col-sm-12">
+    				<label>Note</label>
+    				<textarea type="text" placeholder="Note" class="form-control" name="order_note"></textarea> 
+    			</div>
     		</div> <!-- row.// -->	
-    	</form>
     </div> <!-- card-body.// -->
     </article> <!-- card.// -->
 
@@ -100,24 +103,21 @@
     <article class="card mb-4">
     <div class="card-body">
     	<h4 class="card-title mb-4">Delivery info</h4>
-    	<form action="">
-        
     		<div class="row">
 				
     				<div class="form-group col-sm-4">
     					<label>House, Street</label>
-    					<input type="text" placeholder="" class="form-control">
+    					<input type="text" placeholder="" class="form-control" name="address_line1">
     				</div>
     				<div class="form-group col-sm-4">
     					<label>Village</label>
-    					<input type="text" placeholder="Type here" class="form-control">
+    					<input type="text" placeholder="Type here" class="form-control" name="village">
     				</div>
     				<div class="form-group col-sm-4">
     					<label>Province</label>
-    					<input type="text" placeholder="" class="form-control">
+    					<input type="text" placeholder="" class="form-control" name="province">
     				</div>
     		</div> <!-- row.// -->	
-    	</form>
     </div> <!-- card-body.// -->
     </article> <!-- card.// -->
 
@@ -140,9 +140,9 @@
     				<a href="#"><img src="./images/misc/btn-paypal.png" height="32"></a>
     				<br><br>
     			</p>
-    		</div> <!-- card body .// -->
-    		</div> <!-- collapse .// -->
-    	</div> <!-- card.// -->
+    		</div> 
+    		</div> 
+    	</div> 
     	<div class="card">
     	<header class="card-header">
     		<img src="./images/misc/payment-card.png" class="float-right" height="24">  
@@ -151,7 +151,7 @@
     			<h6 class="form-check-label"> Credit Card  </h6>
     		</label>
     	</header>
-    	<div id="pay_payme" class="collapse" data-parent="#accordion_pay">
+    	<!-- <div id="pay_payme" class="collapse" data-parent="#accordion_pay">
     		<div class="card-body">
     			<p class="alert alert-success">Some information or instruction</p>
     			<form class="form-inline">
@@ -160,11 +160,11 @@
     				<input type="number" maxlength="3" class="form-control mr-2"  style="width: 100px"  placeholder="cvc" name="">
     				<button class="btn btn btn-success">Button</button>
     			</form>
-    		</div> <!-- card body .// -->
-    	</div> <!-- collapse .// -->
-    	</div> <!-- card.// -->
+    		</div>
+    	</div>-->
+    	</div>
 
-    </article> <!-- accordion end.// -->
+    </article>
 
     <article class="card mb-4">
     <div class="card-body">
