@@ -77,19 +77,19 @@
     		<div class="row">
     			<div class="form-group col-sm-6">
     				<label>First name</label>
-    				<input type="text" placeholder="Type here" class="form-control" name="first_name">
+    				<input type="text" placeholder="Type here" class="form-control" name="first_name" value="{{ user.first_name }}">
     			</div>
     			<div class="form-group col-sm-6">
     				<label>Last name</label>
-    				<input type="text" placeholder="Type here" class="form-control" name="last_name">
+    				<input type="text" placeholder="Type here" class="form-control" name="last_name" value="{{ user.last_name }}">
     			</div>
     			<div class="form-group col-sm-6">
     				<label>Phone</label>
-    				<input type="text" value="+998" class="form-control" name="phone_number">
+    				<input type="text" class="form-control" name="phone_number" value="{{ user.phone_number }}">
     			</div>
     			<div class="form-group col-sm-6">
     				<label>Email</label>
-    				<input type="email" placeholder="example@gmail.com" class="form-control" name="email">
+    				<input type="email" placeholder="example@gmail.com" class="form-control" name="email" value="{{ user.email }}">
     			</div>
 				<div class="form-group col-sm-12">
     				<label>Note</label>
@@ -127,7 +127,7 @@
     		<header class="card-header">
     			<img src="./images/misc/payment-paypal.png" class="float-right" height="24"> 
     			<label class="form-check collapsed" data-toggle="collapse" data-target="#pay_paynet">
-    				<input class="form-check-input" name="payment-option" checked type="radio" value="option2">
+    				<input class="form-check-input" name="payment_method" checked type="radio" value="paypal">
     				<h6 class="form-check-label"> 
     					Paypal 
     				</h6>
@@ -147,8 +147,8 @@
     	<header class="card-header">
     		<img src="./images/misc/payment-card.png" class="float-right" height="24">  
     		<label class="form-check" data-toggle="collapse" data-target="#pay_payme">
-    			<input class="form-check-input" name="payment-option" type="radio" value="option2">
-    			<h6 class="form-check-label"> Credit Card  </h6>
+    			<input class="form-check-input" name="payment_method" type="radio" value="credit card">
+    			<h6 class="form-check-label"> Credit Card </h6>
     		</label>
     	</header>
     	<!-- <div id="pay_payme" class="collapse" data-parent="#accordion_pay">
@@ -162,6 +162,15 @@
     			</form>
     		</div>
     	</div>-->
+    	</div>
+		<div class="card">
+    	<header class="card-header">
+    		<img src="./images/misc/payment-card.png" class="float-right" height="24">  
+    		<label class="form-check" data-toggle="collapse" data-target="#pay_payme">
+    			<input class="form-check-input" name="payment_method" type="radio" value="cod">
+    			<h6 class="form-check-label"> Cash on Delivery</h6>
+    		</label>
+    	</header>
     	</div>
 
     </article>

@@ -6,108 +6,149 @@
 
 {% load humanize %}
 <section class="section-content padding-y bg">
-<div class="container">
-	<form action="{% url 'place_order' %}" method="POST">
-	{% csrf_token %}
-<article class="card mb-4">
-    <div class="card-body">
-		<header class="mb-4">
-			<h4 class="card-title">Delivery Info</h4>
-		</header>
-		<p class="card-text">Fullname: {{ order.full_name }}</p>
-		<p class="card-text">Address: {{ order.full_address }}</p>
-		<p class="card-text">Phone: {{ order.phone_number }}</p>
-		{% if order.order_note %}
-			<p class="card-text">Order note: {{ order.order_note}}</p>
-		{% endif %}
+	<div class="container">
+		<form action="{% url 'payments' %}" method="POST">
+		{% csrf_token %}
+			<article class="card mb-4">
+		    <div class="card-body">
+				<header class="mb-4">
+					<h4 class="card-title">Delivery Info</h4>
+				</header>
+				<p class="card-text">Fullname: {{ order.full_name }}</p>
+				<p class="card-text">Address: {{ order.full_address }}</p>
+				<p class="card-text">Phone: {{ order.phone_number }}</p>
+				<input type="hidden" name="orderID" id="orderID" value="{{ order.order_number }}">
+				{% if order.order_note %}
+					<p class="card-text">Order note: {{ order.order_note}}</p>
+				{% endif %}
+			</div>
+		</article>
+
+		<article class="card mb-4">
+		    <div class="card-body">
+				<header class="mb-4">
+					<h4 class="card-title">Payment</h4>
+				</header>
+				<p class="card-text">Payment method: {{ payment_method|capfirst }}</p>
+				<input type="hidden" name="payment_method" id="payment_method" value="{{ payment_method }}">
+			</div>
+		</article>
+		<!-- ============================ COMPONENT 2 ================================= -->
+		 <article class="card mb-4">
+		    <div class="card-body">
+				<header class="mb-4">
+					<h4 class="card-title">Review cart</h4>
+				</header>
+				<div class="row">
+					{% for cart_item in cart_items %}
+						<div class="col-md-6">
+							<figure class="itemside mb-3">
+								<div class="aside"><img src="{{ cart_item.product.image.url }}" class="border img-sm"></div>
+								<figcaption class="info">
+									<p><strong>{{ cart_item.product.product_name }}</strong></p>
+									{% if cart_item.variation.all %}
+										{% for item in cart_item.variation.all%}
+											<p class="small text-muted">{{ item.variation_category }}: {{ item.variation_value }}</p>
+										{% endfor %}
+									{% endif %}
+									<span>{{ cart_item.quantity }}x{{ cart_item.product.price|floatformat:0|intcomma }}đ = Total: {{ cart_item.sub_total|floatformat:0|intcomma }}đ </span>
+								</figcaption>
+							</figure>
+						</div>
+					{% endfor %}
+				</div>
+		</article>
+
+		<article class="card mb-4">
+		    <div class="card-body">
+		        <dl class="row">
+				  <dt class="col-sm-10">Subtotal: <span class="float-right text-muted">{{ cart_items.count }} items</span></dt>
+				  <dd class="col-sm-2 text-right"><strong>{{ total|floatformat:0|intcomma }}đ</strong></dd>
+				
+				  <dt class="col-sm-10">Discount: <span class="float-right text-muted">{{ discount_percent|floatformat:0}}% offer</span></dt>
+				  <dd class="col-sm-2 text-danger text-right"><strong>{{ discount|floatformat:0|intcomma }}đ</strong></dd>
+				
+				  <dt class="col-sm-10">Delivery charge: <span class="float-right text-muted">Express delivery</span></dt>
+				  {% if grand_total <= 100000 %}
+				  <dd class="col-sm-2 text-right"><strong>40.000đ</strong></dd>
+				  {% elif grand_total <= 500000 %}
+				  <dd class="col-sm-2 text-right"><strong>20.000đ</strong></dd>
+				  {% else %}
+				  <dd class="col-sm-2 text-right"><strong class="text-success">Free</strong></dd>
+				  {% endif %}
+				
+				  <dt class="col-sm-10">Tax: <span class="float-right text-muted">2%</span></dt>
+				  <dd class="col-sm-2 text-right text-success"><strong>{{ tax|floatformat:0|intcomma }}đ</strong></dd>
+				
+				  <dt class="col-sm-10">Total:</dt>
+				  <dd class="col-sm-2 text-right"><strong class="h5 text-dark">{{ grand_total|floatformat:0|intcomma }}đ</strong></dd>
+				</dl>
+			
+		        <hr>
+			
+		        <dl class="row">
+		          <dt class="col-sm-10 text-muted">Clicking "Place Order" means that you agree to obey <a href="#">the terms and conditions</a>.</dt>
+		          <dd class="col-sm-2 text-right">
+					<button type="submit" id="order-place-button" class="btn btn-primary btn-block"> Place order </button>
+					<!-- <button id="order-place-button" class="btn btn-primary btn-block"> Place order </button> -->
+				</dd>
+				</dl> 
+		    </div>
+		    </article>
+		<!-- </form> -->
 	</div>
-</article>
-<!-- ============================ COMPONENT 2 ================================= -->
- <article class="card mb-4">
-    <div class="card-body">
-		<header class="mb-4">
-			<h4 class="card-title">Review cart</h4>
-		</header>
-			<div class="row">
-				<div class="col-md-6">
-					<figure class="itemside  mb-3">
-						<div class="aside"><img src="../../static/images/items/2.jpg" class="border img-sm"></div>
-						<figcaption class="info">
-							<p>Name of the product goes here or title </p>
-							<span>2x $290 = Total: $430 </span>
-						</figcaption>
-					</figure>
-				</div> <!-- col.// -->
-				<div class="col-md-6">
-					<figure class="itemside  mb-3">
-						<div class="aside"><img src="../images/items/2.jpg" class="border img-sm"></div>
-						<figcaption class="info">
-							<p>Name of the product goes here or title </p>
-							<span>2x $290 = Total: $430 </span>
-						</figcaption>
-					</figure>
-				</div> <!-- col.// -->
-				<div class="col-md-6">
-					<figure class="itemside mb-3">
-						<div class="aside"><img src="../images/items/3.jpg" class="border img-sm"></div>
-						<figcaption class="info">
-							<p>Name of the product goes here or title </p>
-							<span>1x $290 = Total: $290 </span>
-						</figcaption>
-					</figure>
-				</div> <!-- col.// -->
-				<div class="col-md-6">
-					<figure class="itemside  mb-3">
-						<div class="aside"><img src="../images/items/4.jpg" class="border img-sm"></div>
-						<figcaption class="info">
-							<p>Name of the product goes here or title </p>
-							<span>4x $290 = Total: $430 </span>
-						</figcaption>
-					</figure>
-				</div> <!-- col.// -->
-	</div>
-</article>
-
-<article class="card mb-4">
-    <div class="card-body">
-        <dl class="row">
-		  <dt class="col-sm-10">Subtotal: <span class="float-right text-muted">2 items</span></dt>
-		  <dd class="col-sm-2 text-right"><strong>{{ total|floatformat:0|intcomma }}đ</strong></dd>
-
-		  <dt class="col-sm-10">Discount: <span class="float-right text-muted">{{ discount_percent|floatformat:0}}% offer</span></dt>
-		  <dd class="col-sm-2 text-danger text-right"><strong>{{ discount|floatformat:0|intcomma }}đ</strong></dd>
-
-		  <dt class="col-sm-10">Delivery charge: <span class="float-right text-muted">Express delivery</span></dt>
-		  {% if grand_total <= 100000 %}
-		  <dd class="col-sm-2 text-right"><strong>40.000đ</strong></dd>
-		  {% elif grand_total <= 500000 %}
-		  <dd class="col-sm-2 text-right"><strong>20.000đ</strong></dd>
-		  {% else %}
-		  <dd class="col-sm-2 text-right"><strong class="text-success">Free</strong></dd>
-		  {% endif %}
-
-		  <dt class="col-sm-10">Tax: <span class="float-right text-muted">2%</span></dt>
-		  <dd class="col-sm-2 text-right text-success"><strong>{{ tax|floatformat:0|intcomma }}đ</strong></dd>
-
-		  <dt class="col-sm-10">Total:</dt>
-		  <dd class="col-sm-2 text-right"><strong class="h5 text-dark">{{ grand_total|floatformat:0|intcomma }}đ</strong></dd>
-		</dl>
-
-        <hr>
-
-        <dl class="row">
-          <dt class="col-sm-10 text-muted">Clicking "Place Order" means that you agree to obey <a href="#">the terms and conditions</a>.</dt>
-          <dd class="col-sm-2 text-right">
-			<button type="submit" name="submit" class="btn btn-primary btn-block"> Place order </button>
-		</dd>
-		</dl>
-        
-        
-    </div>
-    </article> <!-- card.// -->
-</form>
-</div> <!-- container .//  -->
 </section>
 
+<!-- <script>
+
+	function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+	var amount = "{{ grand_total }}"
+	var url = "{% url 'payments' %}"
+	var csrftoken = getCookie('csrftoken');
+	var orderID = "{{ order.order_number }}"
+	var payment_method = 'Generic'
+	var redirect_url = "{% url 'order_complete' %}"
+	console.log(csrftoken)
+
+	document.getElementById("order-place-button").addEventListener("click", function() {
+		sendData();
+	});
+
+	function sendData(){
+		fetch(url, {
+			method : "POST",
+			headers: {
+				"Content-type": "application/json",
+				"X-CSRFToken": csrftoken,
+			},
+			body: JSON.stringify({
+				orderID: orderID,
+				transID: "GENERIC_" + Date.now(),
+				payment_method: payment_method,
+				status: 'Processing',
+			}),
+		// })
+	  	// .then((response) => response.json())
+	  	// .then((data) => {
+		// 	window.location.href = redirect_url + '?order_number='+data.orderID+'&payment_id='+data.transID;
+		});
+	}
+
+</script> -->
+	
 {% endblock %}
-<!-- ============================ COMPONENT 2 END//  ================================= -->
+
