@@ -17,6 +17,7 @@ class Payment(models.Model):
 class Order(models.Model):
     STATUS = (
         ('New', 'New'),
+        ('Processing', 'Processing'),
         ('Accepted', 'Accepted'),
         ('Delivering', 'Delivering'),
         ('Completed', 'Completed'),
@@ -59,7 +60,7 @@ class OrderProduct(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+    variation = models.ManyToManyField(Variation, blank=True)
     quantity = models.IntegerField()
     product_price = models.FloatField()
     ordered = models.BooleanField(default=False)
