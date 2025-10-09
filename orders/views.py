@@ -54,21 +54,21 @@ def payments(request):
 
     CartItem.objects.filter(user=request.user).delete()
 
-    # mail_subject = 'Thank you for your order!'
-    # message = render_to_string('orders/order_recieved_email.html', {
-    #     'user': request.user,
-    #     'order': order,
-    # })
-    # to_email = request.user.email
-    # send_email = EmailMessage(mail_subject, message, to=[to_email])
-    # send_email.send()
-# 
+    mail_subject = 'Thank you for your order!'
+    message = render_to_string('orders/order_received_email.html', {
+        'user': request.user,
+        'order': order,
+    })
+    to_email = request.user.email
+    send_email = EmailMessage(mail_subject, message, to=[to_email])
+    send_email.send()
+ 
     data = {
         'order_number': order.order_number,
         'transID': payment.payment_id,
     }
 
-    return render(request, 'orders/order_complete.html')
+    return redirect(f"/orders/order_complete?order_number={data['order_number']}&payment_id={data['transID']}")
 
 def place_order(request, total=0, quantity=0):
     current_user = request.user
@@ -139,8 +139,7 @@ def place_order(request, total=0, quantity=0):
     
 def order_complete(request):
     order_number = request.GET.get('order_number')
-    return HttpResponse(order_number)
-    transID = request.GET.get('payment_method')
+    transID = request.GET.get('payment_id')
 
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
