@@ -38,11 +38,14 @@ def product_detail(request, category_slug, product_slug):
         raise e
     
     reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+    review_count = reviews.count()
 
     context = {
         'single_product': single_product,
         'in_cart': in_cart,
         'reviews': reviews,
+        'review_count': review_count,
+        'average_rating': single_product.averageRating
     }
 
     return render(request, 'store/product_detail.html', context)
