@@ -1,7 +1,7 @@
 {% if messages %}
     {% for message in messages %}
-    <div class="container" id="message">
-        <div {% if message.tags %}class="alert alert-{{ message.tags }}"{% endif %} role="alert">
+    <div class="container" id="message-{{ forloop.counter }}">
+        <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
             </button>
@@ -10,5 +10,4 @@
         </div>
     </div>
     {% endfor %}
-    
 {% endif %}
