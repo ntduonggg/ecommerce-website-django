@@ -5,11 +5,6 @@
 {% block content %}
 
 <!-- ========================= SECTION PAGETOP ========================= -->
-<section class="section-pagetop bg">
-	<div class="container">
-		<h2 class="title-page">My account</h2>
-	</div> <!-- container //  -->
-</section>
 
 <section class="section-content padding-y">
 	<div class="container">
@@ -19,6 +14,7 @@
 				{% if user.id is not None %}
 				<article class="card mb-3">
 					<div class="card-body">
+						<h4 class="card-title mb-4">Dashboard</h4>
 						<figure class="icontext">
 								<div class="icon">
 									<img class="rounded-circle img-sm border" src="{% static 'images/avatars/avatar3.jpg' %}">
