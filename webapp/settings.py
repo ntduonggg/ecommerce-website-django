@@ -155,9 +155,6 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 
-# ============================================
-# STORAGES Configuration (Django 5.0+)
-# ============================================
 
 STORAGES = {
     "default": {
@@ -167,10 +164,6 @@ STORAGES = {
         "BACKEND": "webapp.storage_backends.StaticStorage",
     },
 }
-
-# ============================================
-# Static & Media URLs
-# ============================================
 
 STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
